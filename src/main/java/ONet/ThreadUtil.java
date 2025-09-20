@@ -96,7 +96,7 @@ public class ThreadUtil {
         return CpuIntenseTargetThreadPoolLazyHolder.EXECUTOR;
     }
 
-    //懒汉式单例创建线程池：用于IO密集型任务
+    //IO intensive pool
     private static class IoIntenseTargetThreadPoolLazyHolder {
         private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(
                 IO_MAX,
@@ -113,7 +113,6 @@ public class ThreadUtil {
                     new ShutdownHookThread("IO intensive pool", new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
-                            //优雅关闭线程池
                             shutdownThreadPoolGracefully(EXECUTOR);
                             return null;
                         }
@@ -166,7 +165,7 @@ public class ThreadUtil {
         return IoIntenseTargetThreadPoolLazyHolder.EXECUTOR;
     }
 
-    private static final int MIXED_MAX = 128;  //最大线程数
+    private static final int MIXED_MAX = 128;
     private static final String MIXED_THREAD_AMOUNT = "mixed.thread.amount";
 
     private static class MixedTargetThreadPoolLazyHolder {
@@ -183,11 +182,9 @@ public class ThreadUtil {
 
         static {
             EXECUTOR.allowCoreThreadTimeOut(true);
-            //JVM关闭时的钩子函数
             Runtime.getRuntime().addShutdownHook(new ShutdownHookThread("mixed thread pool", new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    //优雅关闭线程池
                     shutdownThreadPoolGracefully(EXECUTOR);
                     return null;
                 }
@@ -205,12 +202,10 @@ public class ThreadUtil {
                 new CustomThreadFactory("seq"));
 
         static {
-            //JVM关闭时的钩子函数
             Runtime.getRuntime().addShutdownHook(
                     new ShutdownHookThread("", new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
-                            //优雅关闭线程池
                             shutdownThreadPoolGracefully(EXECUTOR);
                             return null;
                         }
