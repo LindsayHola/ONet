@@ -1,4 +1,4 @@
-packsage src.main.java.ONet
+package src.main.java.ONet;
 import org.junit.jupiter.api.Test;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
